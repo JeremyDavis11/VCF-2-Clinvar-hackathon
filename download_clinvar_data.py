@@ -21,7 +21,7 @@ else:
     clinvar = pd.read_csv(RAW_FILE, sep='\t', compression='gzip', low_memory=False)
     clinvar = clinvar[clinvar['Assembly'] == 'GRCh38']
     clinvar = clinvar[['Chromosome', 'PositionVCF', 'ReferenceAlleleVCF', 'AlternateAlleleVCF',
-                       'ClinicalSignificance', 'GeneSymbol', 'PhenotypeList', 'ReviewStatus']]
+                       'ClinicalSignificance', 'GeneSymbol', 'PhenotypeList', 'ReviewStatus', 'VariationID']]
     clinvar.to_csv(TRIMMED_FILE, index=False)
 
     # clean up the large raw file
