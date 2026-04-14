@@ -18,6 +18,16 @@ VCF_FILE := DATA_DIR / "ALL.chr21.GRCh38.phased.vcf"
 default:
     @just --list
 
+# ── Environment ───────────────────────────────────────────────────────────────
+
+# Install Python dependencies
+install:
+    pixi add python pandas streamlit plotly
+
+# Run the VCF parser test
+run-parser:
+    pixi run python src/vcf_annotator/parsing/vcf_parser.py
+
 # ── Setup ─────────────────────────────────────────────────────────────────────
 
 # Create the data directory if it doesn't exist

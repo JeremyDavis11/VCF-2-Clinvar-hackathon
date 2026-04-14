@@ -1,33 +1,40 @@
 import pandas as pd
 
-clinvar = pd.read_csv('clinvar_trimmed.csv')
 
 def parse_vcf(filepath):
+    """
+    Parse a VCF file into a pandas DataFrame.
+
+    Args:
+        filepath: Path to the VCF file (str or Path)
+
+    Returns:
+        df   -- DataFrame with columns: CHROM, POS, ID, REF, ALT, QUAL, FILTER, INFO (+ sample columns if present)
+        meta -- List of ## header lines
+    """
     meta = []
-    with open(filepath, 'r') as f:
+
+    with open(filepath, "r") as f:
         for line in f:
-            if line.startswith('##'):
-                meta.append(line)
-            elif line.startswith('#CHROM'):
-                cols = line.strip().lstrip('#').split('\t')
+            if line.startswith("##"):
+                meta.append(line.strip())
+            elif line.startswith("#CHROM"):
+                cols = line.strip().lstrip("#").split("\t")
                 break
-        df = pd.read_csv(f, sep='\t', names=cols)
+
+        df = pd.read_csv(f, sep="\t", names=cols)
+
+    df["CHROM"] = df["CHROM"].astype(str)
+    df["POS"] = df["POS"].astype(int)
+
     return df, meta
 
 
-#
-vcf_df, meta = parse_vcf('test_real.vcf')
+if __name__ == "__main__":
+    from config import DEMO_VCF
 
-# make CHROM a string to match ClinVar
-vcf_df['CHROM'] = vcf_df['CHROM'].astype(str)
-
-# merge
-results = pd.merge(
-    vcf_df,
-    clinvar,
-    left_on=['CHROM', 'POS', 'REF', 'ALT'],
-    right_on=['Chromosome', 'PositionVCF', 'ReferenceAlleleVCF', 'AlternateAlleleVCF'],
-    how='inner'
-)
-
-print(results[['CHROM', 'POS', 'REF', 'ALT', 'ClinicalSignificance', 'GeneSymbol', 'PhenotypeList']])
+    df, meta = parse_vcf(DEMO_VCF)
+    print(f"Meta lines: {len(meta)}")
+    print(f"Variants loaded: {len(df)}")
+    print(f"Columns: {list(df.columns)}")
+    print(df.head())
