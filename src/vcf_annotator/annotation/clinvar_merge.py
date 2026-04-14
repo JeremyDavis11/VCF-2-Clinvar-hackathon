@@ -25,6 +25,7 @@ def load_clinvar(path=CLINVAR_PATH):
             "GeneSymbol",
             "PhenotypeList",
             "Assembly",
+            "VariationID",
         ],
         low_memory=False,
     )
@@ -65,6 +66,15 @@ def annotate(vcf_df, clinvar_df):
         how="left",
     )
 
+    # Build direct ClinVar links for matched variants
+    merged["ClinVar_URL"] = merged["VariationID"].apply(
+        lambda vid: (
+            f"https://www.ncbi.nlm.nih.gov/clinvar/variation/{int(vid)}/"
+            if pd.notna(vid)
+            else None
+        )
+    )
+
     # Drop redundant ClinVar key columns (already represented by VCF columns)
     merged.drop(
         columns=[
@@ -101,6 +111,7 @@ if __name__ == "__main__":
                 "ClinicalSignificance",
                 "GeneSymbol",
                 "PhenotypeList",
+                "ClinVar_URL",
             ]
         ].head(20)
     )
