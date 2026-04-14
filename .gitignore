@@ -4,16 +4,17 @@
 # =============================================================================
 
 # --- Large / sensitive data files -------------------------------------------
-data/variant_summary.txt
-data/variant_summary.txt.gz
+data/raw/
+data/processed/
 data/clinvar_trimmed.csv
-data/*.vcf
-data/*.vcf.gz
-data/*.bcf
-data/*.tbi
-data/*.bai
 *.vcf
 *.vcf.gz
+*.bcf
+*.tbi
+*.bai
+
+# --- Exceptions: demo data safe to commit ------------------------------------
+!data/demo/demo.vcf
 
 # --- Python ------------------------------------------------------------------
 __pycache__/
@@ -47,8 +48,18 @@ htmlcov/
 .ipynb_checkpoints/
 *.ipynb
 
-# --- Streamlit ------------------- -------------------------------------------
+# --- Streamlit ---------------------------------------------------------------
 .streamlit/secrets.toml
+
+# --- Type checking & linting -------------------------------------------------
+.mypy_cache/
+.ruff_cache/
+
+# --- pixi (conda env manager) ------------------------------------------------
+.pixi/
+
+# --- Results & outputs -------------------------------------------------------
+results/
 
 # --- OS clutter --------------------------------------------------------------
 .DS_Store
