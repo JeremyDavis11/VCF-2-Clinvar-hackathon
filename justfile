@@ -3,7 +3,7 @@
 
 # ── Variables ────────────────────────────────────────────────────────────────
 
-DATA_DIR := "data"
+DATA_DIR := "data/raw"
 
 CLINVAR_URL := "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/variant_summary.txt.gz"
 CLINVAR_GZ  := DATA_DIR / "variant_summary.txt.gz"
