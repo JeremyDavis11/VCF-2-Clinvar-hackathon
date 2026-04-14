@@ -16,7 +16,7 @@ def parse_vcf(filepath):
 
 
 #
-vcf_df, meta = parse_vcf('test_real.vcf')
+vcf_df, meta = parse_vcf('data/ALL.chr21.GRCh38.phased.vcf')
 
 # make CHROM a string to match ClinVar
 vcf_df['CHROM'] = vcf_df['CHROM'].astype(str)
@@ -30,4 +30,8 @@ results = pd.merge(
     how='inner'
 )
 
-print(results[['CHROM', 'POS', 'REF', 'ALT', 'ClinicalSignificance', 'GeneSymbol', 'PhenotypeList']])
+results['ClinVar_URL'] = 'https://www.ncbi.nlm.nih.gov/clinvar/variation/' + results['VariationID'].astype(str) + '/'
+
+print(results[['CHROM', 'POS', 'REF', 'ALT', 'ClinicalSignificance', 'GeneSymbol', 'PhenotypeList', 'ClinVar_URL']])
+
+print(results['ClinVar_URL'].iloc[0])
