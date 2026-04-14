@@ -77,3 +77,6 @@ desktop.ini
 *.log
 *.tmp
 *.bak
+
+# --- Directory placeholders --------------------------------------------------
+!.gitkeep
