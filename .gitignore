@@ -1,5 +1,68 @@
-variant_summary.txt
-variant_summary.txt.gz
-clinvar_trimmed.csv
+# =============================================================================
+# BIOHACK 2026 — .gitignore
+# Python · Streamlit · pandas · Plotly
+# =============================================================================
+
+# --- Large / sensitive data files -------------------------------------------
+data/variant_summary.txt
+data/variant_summary.txt.gz
+data/clinvar_trimmed.csv
+data/*.vcf
+data/*.vcf.gz
+data/*.bcf
+data/*.tbi
+data/*.bai
+*.vcf
+*.vcf.gz
+
+# --- Python ------------------------------------------------------------------
 __pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+.Python
+
+# --- Virtual environments ----------------------------------------------------
 .venv/
+venv/
+env/
+ENV/
+.env
+
+# --- Distribution / packaging ------------------------------------------------
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+
+# --- Testing & coverage ------------------------------------------------------
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# --- Jupyter (in case anyone explores locally) -------------------------------
+.ipynb_checkpoints/
+*.ipynb
+
+# --- Streamlit ------------------- -------------------------------------------
+.streamlit/secrets.toml
+
+# --- OS clutter --------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Editors & IDEs ----------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# --- Logs & temp files -------------------------------------------------------
+*.log
+*.tmp
+*.bak
