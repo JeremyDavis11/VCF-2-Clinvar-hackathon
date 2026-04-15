@@ -24,9 +24,6 @@ default:
 install:
     pixi add python pandas streamlit plotly
 
-# Run the VCF parser test
-run-parser:
-    pixi run python src/vcf_annotator/parsing/vcf_parser.py
 
 # ── Setup ─────────────────────────────────────────────────────────────────────
 
@@ -76,6 +73,36 @@ clinvar-columns:
 vcf-count:
     @echo "━━━ Variant count in chr21 VCF ━━━"
     grep -vc "^#" {{VCF_FILE}}
+
+# ── Demo Data Preparation ─────────────────────────────────────────────────────
+
+# Stratified subsample — every 100th variant across the full chr21 VCF
+subsample-vcf:
+    pixi run python scripts/vcf_subsample.py \
+        --input data/raw/ALL.chr21.GRCh38.phased.vcf \
+        --output data/demo/chr21_subsampled.vcf \
+        --n 50
+
+# Pre-filter ClinVar to chr21 only (run once, saves RAM downstream)
+filter-clinvar-chr21:
+    pixi run python scripts/clinvar_filter_chr21.py
+
+# Filter subsampled VCF to ClinVar-matched variants only
+filter-clinvar:
+    pixi run python scripts/vcf_clinvar_filter.py \
+        --input data/demo/chr21_subsampled.vcf \
+        --output data/demo/demo.vcf
+
+
+# Run both in sequence to build the final demo VCF
+build-demo: subsample-vcf filter-clinvar-chr21 filter-clinvar
+    @echo "✓ demo.vcf ready at data/demo/demo.vcf"
+
+# ── Execution ─────────────────────────────────────────────────────────────────
+
+# Run the VCF parser test
+run-parser:
+    pixi run python src/vcf_annotator/parsing/vcf_parser.py
 
 # ── Clean ─────────────────────────────────────────────────────────────────────
 
