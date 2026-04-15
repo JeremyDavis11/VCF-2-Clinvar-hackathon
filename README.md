@@ -8,6 +8,15 @@ No web-based tool exists for finding ClinVar entries associated with variants of
 
 ## Using the web tool
 fill this out as the front end is built up
+
+### Validation
+file requirement - '*.vcf'
+
+content requirements:
+    cols - [chr, pos, alt allele, clinical sign, gene symbol, clinvar link]
+    file size - ?
+
+
 ## Interpreting output
 fill this out as the front end is built up
 
