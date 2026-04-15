@@ -1,4 +1,4 @@
-#VCF-TO-CLINVAR
+# VCF-TO-CLINVAR
 A web-based application for determining clinically significant variants from a human VCF file.
 
 ## Justification
@@ -10,5 +10,6 @@ No web-based tool exists for finding ClinVar entries associated with variants of
 fill this out as the front end is built up
 ## Interpreting output
 fill this out as the front end is built up
+
 ## Team
 
