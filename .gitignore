@@ -79,4 +79,6 @@ desktop.ini
 *.bak
 
 # --- Directory placeholders --------------------------------------------------
-!.gitkeep
+!.gitkeep# pixi environments
+.pixi/*
+!.pixi/config.toml
