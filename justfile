@@ -25,12 +25,30 @@ default:
 
 # Install Python dependencies
 install:
-    pixi add python pandas streamlit plotly
+    pixi add python pandas streamlit plotly pytest ruff mypy
+
+# Run once after cloning — sets up dirs and installs everything
+setup: init install
+
+# Run tests
+test:
+    pixi run pytest tests/
+
+# Lint
+lint:
+    pixi run ruff check .
+
+# Typecheck
+typecheck:
+    pixi run mypy src/
+
+# Run all checks — useful before committing
+check: lint typecheck test
 
 # ── Setup ─────────────────────────────────────────────────────────────────────
 
 # Create all required data directories
-setup:
+init:
     mkdir -p {{DATA_RAW}}
     mkdir -p {{DATA_DEMO}}
     mkdir -p {{DATA_PROCESSED}}
@@ -39,10 +57,10 @@ setup:
 # ── Download ──────────────────────────────────────────────────────────────────
 
 # Download both ClinVar and the 1000 Genomes chr21 VCF (GRCh38)
-download: setup download-clinvar download-vcf
+download: init download-clinvar download-vcf
 
 # Download ClinVar variant_summary.txt.gz, decompress, and preview
-download-clinvar: setup
+download-clinvar: init
     @echo "━━━ Downloading ClinVar variant_summary.txt.gz ━━━"
     curl -L --progress-bar -o {{CLINVAR_GZ}} {{CLINVAR_URL}}
     @echo ""
@@ -55,7 +73,7 @@ download-clinvar: setup
     @echo "✓ ClinVar saved to {{CLINVAR_TXT}}"
 
 # Download 1000 Genomes chr21 VCF (GRCh38, biallelic SNV+INDEL), decompress, and preview
-download-vcf: setup
+download-vcf: init
     @echo "━━━ Downloading 1000 Genomes chr21 VCF (GRCh38) ━━━"
     curl -L --progress-bar -o {{VCF_GZ}} {{VCF_URL}}
     @echo ""
@@ -110,7 +128,7 @@ build-demo: filter-clinvar-chr21 subsample-vcf filter-clinvar
     @echo "✓ demo.vcf ready at data/demo/demo.vcf"
 
 # Full setup from scratch — for new teammates
-build-all: setup install download build-demo
+build-all: init install download build-demo
     @echo "✓ Environment, data, and demo files ready"
 
 # ── Execution ─────────────────────────────────────────────────────────────────

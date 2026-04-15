@@ -82,3 +82,8 @@ desktop.ini
 !.gitkeep# pixi environments
 .pixi/*
 !.pixi/config.toml
+clinvar_trimmed.csv
+variant_summary.txt
+variant_summary.txt.gz
+data/variant_summary.txt
+data/variant_summary.txt.gz

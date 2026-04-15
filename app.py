@@ -1,59 +1,79 @@
-import io
-import time
-import gzip
-import pandas as pd
 import streamlit as st
+import pandas as pd
+from src.vcf_annotator.parsing.vcf_parser import parse_vcf
+from src.vcf_annotator.annotation.clinvar_merge import load_clinvar, annotate
+from src.vcf_annotator.pubmed_search.search_pubmed import search_pubmed
 
-# ════════════════════════════════════════════════════════════════════════════════
-# PAGE CONFIG  (must be first Streamlit call)
-# ════════════════════════════════════════════════════════════════════════════════
-# set page config:  tells Streamlit how the app page should behave and appear.
-st.header("VarSight")
-st.subheader("The ClinVar Annotator for non-coders")
-st.set_page_config(
-    page_title="VarSight · ClinVar Annotator",
-    page_icon="🧬",
-    layout="wide",
-    # This sets the sidebar to be collapsed by default when the app opens.
-    initial_sidebar_state="collapsed",
+# cache clinvar data for faster use
+@st.cache_data
+def get_clinvar():
+    return load_clinvar()
+
+def main():
+    st.title("VCF-to-ClinVar Annotator")
+
+    clinvar = get_clinvar() # cached ClinVar DataFrame
+
+    uploaded_file = st.file_uploader("Upload a VCF file", type=["vcf"])
+
+    if uploaded_file:
+        import tempfile
+        import os
+
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".vcf") as tmp:
+            tmp.write(uploaded_file.getvalue())
+            tmp_path = tmp.name
+
+        # process the uploaded file
+        with st.spinner("Annotating VCF against ClinVar..."):
+            vcf_df, meta = parse_vcf(tmp_path) # user's uploaded VCF
+            results = annotate(vcf_df, clinvar) # merged DataFrame with everything
+            os.unlink(tmp_path) # clean up temp file
+
+        matched = results[results['ClinicalSignificance'].notna()]
+
+        # Filter variants by clinical significance with a drop down menu
+        sig_filter = st.selectbox("Filter by Clinical Significance", ["ALL"] + sorted(matched["ClinicalSignificance"].dropna().unique().tolist()))
+        if sig_filter != "ALL":
+            matched = matched[matched["ClinicalSignificance"] == sig_filter]
+
+        display_cols = ["CHROM", 
+                "POS", 
+                "ALT", 
+                "ClinicalSignificance",
+                "GeneSymbol",
+                "PhenotypeList",
+                "ClinVar_URL"]
+        
+        # display variant table
+        st.dataframe(matched[display_cols], 
+                     column_config={"ClinVar_URL": st.column_config.LinkColumn("ClinVar Link")})
+        
+        # grab gene symbols for lit lookup
+        variant_options = matched[display_cols].apply(
+            lambda row: f"{row['GeneSymbol']} - {row['CHROM']}:{row['POS']} {row['ALT']}", axis=1
+        )
+
+        # literature lookup
+        selected = st.selectbox("Select a variant for literature search", variant_options)
+        if st.button("Search PubMed"):
+            idx = variant_options[variant_options == selected].index[0]
+            gene = matched.loc[idx, "GeneSymbol"]
+            pmids, abstracts = search_pubmed(gene)
+        
+            # split abstracts by double newline
+            articles = [a.strip() for a in abstracts.split("\n\n\n") if a.strip()]
+
+            # put each article in its own collapseable box on the page
+            for i, (pmid, article) in enumerate(zip(pmids, articles)):
+                with st.expander(f"article {i + 1} - PMID: {pmid}"):
+                    st.write(article)
+                    st.markdown(f"[View on Pubmed](https://pubmed.ncbi.nlm.nih.gov/{pmid}/)")
+
+    else:
+        st.info("Upload a VCF file to get started")
 
 
-)
-
-st.title("VarSight")
-
-# upload card, which is the container for the file uploader and analyze button
-uploaded_file = st.file_uploader("Upload a VCF file", type=["vcf","tsv"], key="file_uploader")
-if uploaded_file:
-    st.success("File uploaded successfully")
-else:
-    st.warning("Please upload a VCF file to proceed")
-st.button("Analyze")
-#-----------------------------------------------------------------------------------------
-
-# <style> tag allows us to write custom CSS to style the Streamlit app. Here, we are importing two fonts from Google Fonts (DM Sans and DM Mono) and applying them to the entire app.
-#  We are also setting a background color and text color for the app.
-st.markdown("""
-<style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
- 
-<! -- Comments: applies rest to all elements, allows for custom styling for browser compatibility -->
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
- 
-html, body, [class*="css"] {
-    font-family: 'DM Sans', sans-serif;
-    background: #f7f6f2;
-    color: #f5182f; 
-}
-            
-#MainMenu, footer, [data-testid="stToolbar"] { visibility: hidden; }
-.block-container { padding: 0 !important; max-width: 100% !important; }
-section[data-testid="stSidebar"] { display: none; }
-                         
-            
-}
-            
-""", unsafe_allow_html=True)
-# unsafe_allow_html=True allows us to include raw HTML in our Streamlit app, 
-# which is necessary for the custom styling we are applying.
+if __name__ == "__main__":
+    main()
 
