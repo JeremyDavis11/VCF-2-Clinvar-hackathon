@@ -116,7 +116,7 @@ just build-all
 This runs the following pipeline in order:
 
 ```
-setup → install → download → filter-clinvar-chr21 → subsample-vcf → filter-clinvar
+init → install → download → filter-clinvar-chr21 → subsample-vcf → filter-clinvar
 ```
 
 Individual steps can also be run in isolation — see `just --list` for all available commands.

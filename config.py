@@ -15,3 +15,6 @@ SUBSAMPLED_PATHOGENIC = DATA_PROCESSED / "chr21_with_pathogenic.vcf"
 # Streamlit demo files
 CLINVAR_PATH = DATA_DEMO / "clinvar_chr21.tsv"
 DEMO_VCF = DATA_DEMO / "demo.vcf"
+
+# Test files
+TEST_VCF = DATA_TEST / "known_pathogenic_chr21.vcf"
