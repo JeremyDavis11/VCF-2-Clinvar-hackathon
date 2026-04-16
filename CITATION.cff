@@ -6,8 +6,10 @@ authors:
     given-names: Trace
     alias: tracelail
     url: https://github.com/tracelail
-  - family-names: [Last]
-    given-names: [First]
+  - family-names: [Davis]
+    given-names: [Jeremy]
+    alias: JeremyDavis11
+    url: https://github.com/JeremyDavis11
   - family-names: [Last]
     given-names: [First]
 version: 0.1.0

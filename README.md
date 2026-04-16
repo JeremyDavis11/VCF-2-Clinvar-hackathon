@@ -3,6 +3,8 @@ A drag-and-drop web application for annotating human genetic variants against Cl
 
 ![Demo](demo.gif)
 
+**Live App:** https://varclin.streamlit.app/
+
 ## Inspiration
 No web-based tool exists for finding ClinVar entries associated with variants of clinical significance from a VCF file.
 Existing tools for this task require a command-line interface (such as ANNOVAR or VEP), which some researchers, including students, may not be familiar with.
@@ -74,7 +76,7 @@ Northeastern University BioHacks 2026 — MS Bioinformatics
 |------|-------|------|
 | Jeremy Davis | davis.jer@northeastern.edu | VCF parser · ClinVar merge · Streamlit app foundation |
 | Trace Lail | lailtrace@gmail.com | Project infrastructure · automated build pipeline (justfile) · test suite with edge case coverage · exception handling and input validation · demo data generation · repository architecture |
-| Miguel [Last] | [email] | UI polish · color gradients · additional app functionality |
+| Miguel Trejo Acosta | trejoacosta.m@northeastern.edu | UI polish · color gradients · additional app functionality · Front-end debugging
 
 ## Special Thanks
 
