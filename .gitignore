@@ -76,6 +76,7 @@ desktop.ini
 *.bak
 
 # --- Directory placeholders --------------------------------------------------
+!.gitkeep# pixi environments
 .pixi/*
 !.pixi/config.toml
 clinvar_trimmed.csv
