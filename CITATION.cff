@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "VCF-to-ClinVar Annotator"
+authors:
+  - family-names: Lail
+    given-names: Trace
+    alias: tracelail
+    url: https://github.com/tracelail
+  - family-names: [Last]
+    given-names: [First]
+  - family-names: [Last]
+    given-names: [First]
+version: 0.1.0
+date-released: 2026-04-16
+license: MIT
