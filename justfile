@@ -25,6 +25,9 @@ default:
 
 # Install Python dependencies
 install:
+    pixi install
+
+# Add packages to environment (dev use only)
     pixi add python pandas streamlit plotly pytest ruff mypy
 
 # Run once after cloning — sets up dirs and installs everything
