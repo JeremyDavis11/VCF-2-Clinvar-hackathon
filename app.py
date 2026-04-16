@@ -18,6 +18,12 @@ st.set_page_config(
     layout="wide"
 )
 
+st.header("VarClin🧬")
+
+st.markdown("""This tool matches variants from a VCF file against the 
+**ClinVar** database to identify clinically significant findings
+and provides links to relevant literature. Upload your VCF file to get started!""")
+st.divider()
 
 # color coding for clinical significance
 def color_significance(val):
@@ -46,7 +52,7 @@ def main():
     st.markdown("Upload a VCF file to identify clinically significant variants from the **ClinVar** database.")
 
     # file uploader that accepts VCF files, with a custom key to avoid conflicts
-    uploaded_file = st.file_uploader("Upload a VCF file", type=["vcf", "gz"], key="vcf_uploader")
+    uploaded_file = st.file_uploader("Upload a VCF file or drag and drop it here", type=["vcf"], key="vcf_uploader")
 
     # use tempfile to save the uploaded file for processing, and os to clean up afterward
     import tempfile
