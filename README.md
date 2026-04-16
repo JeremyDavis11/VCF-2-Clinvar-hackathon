@@ -3,6 +3,8 @@ A drag-and-drop web application for annotating human genetic variants against Cl
 
 ![Demo](demo.gif)
 
+**Live App:** https://varclin.streamlit.app/
+
 ## Inspiration
 No web-based tool exists for finding ClinVar entries associated with variants of clinical significance from a VCF file.
 Existing tools for this task require a command-line interface (such as ANNOVAR or VEP), which some researchers, including students, may not be familiar with.
