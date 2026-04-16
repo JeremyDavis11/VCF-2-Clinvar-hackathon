@@ -2,13 +2,28 @@ import pandas as pd
 import pytest
 
 from config import TEST_VCF
-from vcf_annotator.parsing.vcf_parser import parse_vcf
+from vcf_annotator.parsing.vcf_parser import COLS, _validate_vcf_cols, parse_vcf
+
+MISSING_COLS = ["CHROM", "REF", "ALT", "QUAL", "INFO", "FORMAT"]
 
 
 @pytest.fixture
 def empty_vcf():
     empty_file = """"""
     return empty_file
+
+
+# Test vcf column validation - has all columns
+def test_validate_vcf_cols():
+    df = pd.DataFrame(columns=COLS)
+    _validate_vcf_cols(df)
+
+
+# Test vcf column validation - missing columns
+def test_validate_vcf_cols_missing_cols():
+    df = pd.DataFrame(columns=MISSING_COLS)
+    with pytest.raises(ValueError):
+        _validate_vcf_cols(df)
 
 
 # Assert the dataframe and column types

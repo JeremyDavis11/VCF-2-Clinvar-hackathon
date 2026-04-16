@@ -2,6 +2,24 @@ import pandas as pd
 
 from config import CLINVAR_PATH
 
+ANNOTATED_COLS = [
+    "CHROM",
+    "POS",
+    "REF",
+    "ALT",
+    "ClinicalSignificance",
+    "GeneSymbol",
+    "PhenotypeList",
+    "ClinVar_URL",
+]
+
+
+def _validate_annotate_cols(df):
+    missing = [col for col in ANNOTATED_COLS if col not in df.columns]
+
+    if missing:
+        raise ValueError(f"Error: Input VCF missing required columns: {missing}")
+
 
 def load_clinvar(path=CLINVAR_PATH):
     """
@@ -13,22 +31,27 @@ def load_clinvar(path=CLINVAR_PATH):
     Returns:
         DataFrame with relevant ClinVar columns, filtered to GRCh38 assembly
     """
-    clinvar = pd.read_csv(
-        path,
-        sep="\t",
-        usecols=[
-            "Chromosome",
-            "PositionVCF",
-            "ReferenceAlleleVCF",
-            "AlternateAlleleVCF",
-            "ClinicalSignificance",
-            "GeneSymbol",
-            "PhenotypeList",
-            "Assembly",
-            "VariationID",
-        ],
-        low_memory=False,
-    )
+    try:
+        clinvar = pd.read_csv(
+            path,
+            sep="\t",
+            usecols=[
+                "Chromosome",
+                "PositionVCF",
+                "ReferenceAlleleVCF",
+                "AlternateAlleleVCF",
+                "ClinicalSignificance",
+                "GeneSymbol",
+                "PhenotypeList",
+                "Assembly",
+                "VariationID",
+            ],
+            low_memory=False,
+        )
+    except FileNotFoundError as e:
+        raise FileNotFoundError(f"ClinVar file not found: {path}") from e
+    except pd.errors.ParserError as e:
+        raise ValueError(f"Unable to parse ClinVar file as TSV: {path}") from e
 
     # Keep only GRCh38 to match standard VCF coordinates
     clinvar = clinvar[clinvar["Assembly"] == "GRCh38"].copy()
@@ -53,18 +76,23 @@ def annotate(vcf_df, clinvar_df):
     Returns:
         Annotated DataFrame with ClinVar columns appended
     """
-    merged = pd.merge(
-        vcf_df,
-        clinvar_df,
-        left_on=["CHROM", "POS", "REF", "ALT"],
-        right_on=[
-            "Chromosome",
-            "PositionVCF",
-            "ReferenceAlleleVCF",
-            "AlternateAlleleVCF",
-        ],
-        how="left",
-    )
+    if vcf_df is None or clinvar_df is None:
+        raise ValueError("vcf_df and clinvar_df must not be None")
+    try:
+        merged = pd.merge(
+            vcf_df,
+            clinvar_df,
+            left_on=["CHROM", "POS", "REF", "ALT"],
+            right_on=[
+                "Chromosome",
+                "PositionVCF",
+                "ReferenceAlleleVCF",
+                "AlternateAlleleVCF",
+            ],
+            how="left",
+        )
+    except ValueError as e:
+        raise ValueError("Unable to merge vcf and clinvar") from e
 
     # Build direct ClinVar links for matched variants
     merged["ClinVar_URL"] = merged["VariationID"].apply(
@@ -87,6 +115,8 @@ def annotate(vcf_df, clinvar_df):
         inplace=True,
         errors="ignore",
     )
+
+    _validate_annotate_cols(merged)
 
     return merged
 
