@@ -14,7 +14,7 @@ data/clinvar_trimmed.csv
 *.bai
 
 # --- Exceptions: demo data safe to commit ------------------------------------
-!data/demo/demo.vcf
+!data/demo/
 
 # --- Python ------------------------------------------------------------------
 __pycache__/
@@ -57,9 +57,6 @@ htmlcov/
 
 # --- pixi (conda env manager) ------------------------------------------------
 .pixi/
-
-# --- Results & outputs -------------------------------------------------------
-results/
 
 # --- OS clutter --------------------------------------------------------------
 .DS_Store

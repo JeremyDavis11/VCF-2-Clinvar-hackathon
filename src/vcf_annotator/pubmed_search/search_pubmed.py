@@ -1,5 +1,7 @@
-'''Search PubMed for articles related to the variant selected by the user'''
+"""Search PubMed for articles related to the variant selected by the user"""
+
 import requests
+
 
 def search_pubmed(gene_symbol, max_results=5):
     # search for articles
@@ -8,7 +10,7 @@ def search_pubmed(gene_symbol, max_results=5):
         "db": "pubmed",
         "term": f"{gene_symbol} clinical significance",
         "retmax": max_results,
-        "retmode": "json"
+        "retmode": "json",
     }
     response = requests.get(search_url, params=params)
     pmids = response.json()["esearchresult"]["idlist"]
@@ -19,7 +21,7 @@ def search_pubmed(gene_symbol, max_results=5):
         "db": "pubmed",
         "id": ",".join(pmids),
         "rettype": "abstract",
-        "retmode": "test"
+        "retmode": "text",
     }
     response = requests.get(fetch_url, params=params)
     return pmids, response.text
