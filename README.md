@@ -76,7 +76,7 @@ Northeastern University BioHacks 2026 — MS Bioinformatics
 |------|-------|------|
 | Jeremy Davis | davis.jer@northeastern.edu | VCF parser · ClinVar merge · Streamlit app foundation |
 | Trace Lail | lailtrace@gmail.com | Project infrastructure · automated build pipeline (justfile) · test suite with edge case coverage · exception handling and input validation · demo data generation · repository architecture |
-| Miguel [Last] | [email] | UI polish · color gradients · additional app functionality |
+| Miguel Trejo Acosta | trejoacosta.m@northeastern.edu | UI polish · color gradients · additional app functionality · Front-end debugging
 
 ## Special Thanks
 
